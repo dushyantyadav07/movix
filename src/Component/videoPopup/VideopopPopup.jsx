@@ -13,7 +13,7 @@ const VideoPopup = ({ show, setShow, videoId, setVideoId }) => {
             <div className="opacityLayer" onClick={hidePopup}></div>
             <div className="videoPlayer">
                 <span className="closeBtn" onClick={hidePopup}>
-                    Close
+                     X
                 </span>
                 <ReactPlayer
                     url={`https://www.youtube.com/watch?v=${videoId}`}
