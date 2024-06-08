@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import "./App.css";
 
 import { fetchDataFromApi } from "./utils/api";
@@ -16,40 +16,57 @@ import Header from "./Component/header/Header";
 function App() {
   const dispatch = useDispatch();
   const { url } = useSelector((state) => state.home);
+
+  const fetchApiConfig = useCallback(async () => {
+    try {
+      const res = await fetchDataFromApi("/configuration");
+      if (res && res.images && res.images.secure_base_url) {
+        const url = {
+          backdrop: res.images.secure_base_url + "original",
+          poster: res.images.secure_base_url + "original",
+          profile: res.images.secure_base_url + "original",
+        };
+        dispatch(getApiConfiguration(url));
+      } else {
+        console.error("Invalid API configuration response", res);
+      }
+    } catch (error) {
+      console.error("Failed to fetch API configuration", error);
+    }
+  }, [dispatch]);
+
+  const genresCall = useCallback(async () => {
+    try {
+      let promises = [];
+      let endPoints = ["tv", "movie"];
+      let allGenres = {};
+
+      endPoints.forEach((url) => {
+        promises.push(fetchDataFromApi(`/genre/${url}/list`));
+      });
+
+      const data = await Promise.all(promises);
+      console.log(data);
+      data.forEach((response) => {
+        if (response && response.genres) {
+          response.genres.forEach((item) => {
+            allGenres[item.id] = item;
+          });
+        } else {
+          console.error("Invalid genres response", response);
+        }
+      });
+
+      dispatch(getGenres(allGenres));
+    } catch (error) {
+      console.error("Failed to fetch genres", error);
+    }
+  }, [dispatch]);
+
   useEffect(() => {
     fetchApiConfig();
     genresCall();
-  }, []);
-
-  const fetchApiConfig = () => {
-    fetchDataFromApi("/configuration").then((res) => {
-      const url = {
-        backdrop: res.images.secure_base_url + "original",
-        poster: res.images.secure_base_url + "original",
-        profile: res.images.secure_base_url + "original",
-      };
-
-      dispatch(getApiConfiguration(url));
-    });
-  };
-
-  const genresCall = async () => {
-    let promises = [];
-    let endPoints = ["tv", "movie"];
-    let allGenres = {};
-
-    endPoints.forEach((url) => {
-      promises.push(fetchDataFromApi(`/genre/${url}/list`));
-    });
-
-    const data = await Promise.all(promises);
-    console.log(data);
-    data.map(({ genres }) => {
-      return genres.map((item) => (allGenres[item.id] = item));
-    });
-
-    dispatch(getGenres(allGenres));
-  };
+  }, [fetchApiConfig, genresCall]);
 
   return (
     <div className="App">
@@ -69,5 +86,3 @@ function App() {
 }
 
 export default App;
-
-// ed4f17a7ec9d402a3f053a9f47e3d315
