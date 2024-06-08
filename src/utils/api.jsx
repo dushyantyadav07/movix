@@ -3,10 +3,8 @@ import axios from "axios";
 //  tmdb base_url
 const BASE_URL = "https://api.themoviedb.org/3";
 // tmdb api token
-const TMDB_TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZDRmMTdhN2VjOWQ0MDJhM2YwNTNhOWY0N2UzZDMxNSIsInN1YiI6IjY0Mjc1YzY3OTYwY2RlMDA3NzEyNzA0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.aCV2Er2tHawvS3mfX2ewxoQiVHR1IQDj1JTakLPMB8o";
-
-// const TMDB_key = "ed4f17a7ec9d402a3f053a9f47e3d315";
+// const TMDB_TOKEN ="eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZDRmMTdhN2VjOWQ0MDJhM2YwNTNhOWY0N2UzZDMxNSIsInN1YiI6IjY0Mjc1YzY3OTYwY2RlMDA3NzEyNzA0ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.aCV2Er2tHawvS3mfX2ewxoQiVHR1IQDj1JTakLPMB8o";
+const TMDB_TOKEN = process.env.REACT_APP_TMDB_TOKEN;
 
 const headers = {
   Authorization: "bearer " + TMDB_TOKEN,
